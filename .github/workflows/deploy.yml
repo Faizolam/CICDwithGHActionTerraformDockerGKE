@@ -24,10 +24,10 @@ jobs:
               with:
                 token_format: 'access_token'
                 workload_identity_provider: 'projects/583709996454/locations/global/workloadIdentityPools/k8s-pool-new/providers/k8s-provider'
-                service_account: 'tf-gke-test@$GCP_PROJECT_ID.iam.gserviceaccount.com'
+                service_account: 'tf-gke-test@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com'
             - name: 'Set up Cloud SDK'
               uses: 'google-github-actions/setup-gcloud@v1'
-            - name: docker auth
+            - name: Docker auth
               run: gcloud auth configure-docker
             - run: gcloud auth list
             - name: Build and push docker image
@@ -38,7 +38,7 @@ jobs:
             - name: Setup Terraform
               uses: hashicorp/setup-terraform@v2
             - name: Terraform init
-              run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="prefix=test"
+              run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="prefix=k8s-test"
               working-directory: ./terraform
             - name: Terraform Plan
               run: |
